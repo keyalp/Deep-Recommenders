@@ -45,30 +45,30 @@ def generate_hparams(model_name: str, train: pd.DataFrame) -> dict:
             'lr': 0.025,
             'max_user_id': int(train["user_id"].max()),
             'max_item_id': int(train["item_id"].max()),
-            'embeding_dim_users': recommended_embeding_dim_users + 20,
-            'embeding_dim_items': recommended_embeding_dim_movies + 20
+            'embeding_dim_users': recommended_embeding_dim_users + 30,
+            'embeding_dim_items': recommended_embeding_dim_movies + 30
         }
 
     if model_name == "residual":
         hparams = {
             'batch_size': 500000,
-            'num_epochs': 2,
-            'lr': 0.001,
+            'num_epochs': 10,
+            'lr': 0.005,
             'max_user_id': int(train["user_id"].max()),
             'max_item_id': int(train["item_id"].max()),
-            'embeding_dim_users': recommended_embeding_dim_users,
-            'embeding_dim_items': recommended_embeding_dim_movies
+            'embeding_dim_users': recommended_embeding_dim_users + 30,
+            'embeding_dim_items': recommended_embeding_dim_movies + 30
         }
     
     if model_name == "compact":
         hparams = {
             'batch_size': 500000,
             'num_epochs': 3,
-            'lr': 0.001,
+            'lr': 0.01,
             'max_user_id': int(train["user_id"].max()),
             'max_item_id': int(train["item_id"].max()),
-            'embeding_dim_users': 10,
-            'embeding_dim_items': 10
+            'embeding_dim_users': 20,
+            'embeding_dim_items': 20
         }
 
     return hparams

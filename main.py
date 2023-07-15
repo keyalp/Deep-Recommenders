@@ -23,9 +23,9 @@ device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cp
 
 def read_data() -> Tuple[pd.DataFrame]:
 
-    train = pd.read_csv("data/train_new.csv", index_col=0)
-    validation = pd.read_csv("data/validation_new.csv", index_col=0)
-    test = pd.read_csv("data/test_new.csv", index_col=0)
+    train = pd.read_csv("data/train.csv", index_col=0)
+    validation = pd.read_csv("data/validation.csv", index_col=0)
+    test = pd.read_csv("data/test.csv", index_col=0)
 
     return (train, validation, test)
 

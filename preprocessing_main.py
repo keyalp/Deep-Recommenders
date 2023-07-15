@@ -38,9 +38,9 @@ netflix_data = NetflixData(train, test)
 netflix_data.create_negative_samples()
 netflix_data.split()
 
-netflix_data.train.to_csv("data/train_new.csv")
-netflix_data.validation.to_csv("data/validation_new.csv")
-netflix_data.test.to_csv("data/test_new.csv")
+netflix_data.train.to_csv("data/train.csv")
+netflix_data.validation.to_csv("data/validation.csv")
+netflix_data.test.to_csv("data/test.csv")
 
 print("Train, validation and test datasets have been successfully stored in the data folder")
 

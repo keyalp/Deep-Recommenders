@@ -133,11 +133,14 @@ class ResidualRecommender(nn.Module):
         self.user_embedding = nn.Embedding(user_count, embedding_size_user)
         self.movie_embedding = nn.Embedding(movie_count, embedding_size_movie)
 
+        self.fc_u = nn.Linear(embedding_size_user, embedding_size_user)
+        self.fc_m = nn.Linear(embedding_size_movie, embedding_size_movie)
+
         self.fc1 = nn.Linear(embedding_size_user + embedding_size_movie, 32)
         self.fc2 = nn.Linear(32, 32)
         self.fc3 = nn.Linear(32, 1)
 
-        self.dropout = nn.Dropout(0.3)
+        self.dropout = nn.Dropout(0.2)
         self.relu = nn.ReLU()
         self.sigmoid = nn.Sigmoid()
 
@@ -148,15 +151,23 @@ class ResidualRecommender(nn.Module):
         user_emb = self.user_embedding(user_id)
         movie_emb = self.movie_embedding(movie_id)
 
+        residual_user_emb = user_emb
+        residual_movie_emb = movie_emb
+
+        user_emb = self.fc_u(user_emb)
+        movie_emb = self.fc_m(movie_emb)
+        user_emb = self.dropout(user_emb)
+        movie_emb = self.dropout(movie_emb)
+
         x = torch.cat((user_emb, movie_emb), dim=1)
         x = self.fc1(x)
         x = self.dropout(x)
-        residual1 = x  # Residual connection
+        residual2 = x  # Residual connection
         x = self.relu(x)
 
         x = self.fc2(x)
         x = self.dropout(x)
-        x = x + residual1  # Skip connection
+        x = x + residual2  # Skip connection
         x = self.relu(x)
 
         x = self.fc3(x)
