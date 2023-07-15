@@ -1,37 +1,16 @@
-import pandas as pd
-import numpy as np
-import random
-import torch
-from torch.utils.data import TensorDataset
-from torch.utils.data import DataLoader
-from typing import Tuple
-from datetime import datetime, timedelta
-import argparse
-import ast
-
 from preprocessing import BasicPreprocessing, NetflixData
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--w", "--whole", help="Indicate if you want to do the whole preprocessing or just the last part", default="False")
+basic_pre = BasicPreprocessing()
 
-args = parser.parse_args()
-whole_preprocessing = ast.literal_eval(args.w)
+# Execute the basic preprocessing:
+data = basic_pre.step_1(basic_pre.data)
+data = basic_pre.step_2(data)
+data = basic_pre.step_3(data)
+train, test = basic_pre.step_4(data)
 
-if whole_preprocessing:
-    basic_pre = BasicPreprocessing()
-
-    # Execute the basic preprocessing:
-    data = basic_pre.step_1(basic_pre.data)
-    data = basic_pre.step_2(data)
-    data = basic_pre.step_3(data)
-    train, test = basic_pre.step_4(data)
-
-else:
-    print("Reading csv files...")
-    train = pd.read_csv("data/Subset1M_traindata.csv", names=["user_id", 'item_id', 'label', 'timestamp'])
-    test = pd.read_csv("data/Subset1M_testdata.csv", names=["user_id", 'item_id', 'label', 'timestamp'])
-    print("Data read successfully")
-
+# Write the datasets because we will use this ones for the factorixation machines and for the absolute popularity model
+train.to_csv("data/Subset1M_traindata.csv", index=False, header=False)
+test.to_csv("data/Subset1M_testdata.csv", index=False, header=False)
 
 netflix_data = NetflixData(train, test)
 

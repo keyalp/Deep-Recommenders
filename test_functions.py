@@ -4,7 +4,9 @@ import numpy as np
 import pandas as pd
 import torch.nn as nn
 from typing import List, Tuple
+import torch
 from torch.utils.data import DataLoader
+from statistics import mean
 
 def getHitRatio(recommend_list: List, gt_item: int):
     if gt_item in recommend_list:
@@ -18,6 +20,25 @@ def getNDCG(recommend_list: np.ndarray, gt_item: int):
         return math.log(2)/math.log(idx+2)
     else:
         return 0
+    
+def coverage (test_set,num_items,rank,model,device):
+    recommend_list_all_users=[]
+    for user_test in test_set:
+        predictions = model.predict(user_test, device)
+        _, indices = torch.topk(predictions, rank)
+        recommend_list_user = user_test[indices.cpu().detach().numpy()][:, 1]
+        for item in recommend_list_user:
+            recommend_list_all_users.append(item)
+
+    num_items_recommended =len(np.unique(recommend_list_all_users))
+    cov = num_items_recommended/num_items
+    return cov
+
+def coverage_rnd(test_set, num_items, rank, rnd_model):
+    random_recommend_list = rnd_model.predict(test_set)
+    num_items_recommended = len(np.unique(random_recommend_list))
+    cov = num_items_recommended / num_items
+    return cov
 
 def generate_test_df(model: nn.Module, test_loader: DataLoader, device) -> pd.DataFrame:
   """
@@ -42,7 +63,6 @@ def generate_test_df(model: nn.Module, test_loader: DataLoader, device) -> pd.Da
             "output_prob": output.cpu().detach().numpy()
             }
         )
-
 
   return results_dataframe
 
@@ -73,3 +93,22 @@ def test_function(test_df: pd.DataFrame) -> Tuple[float]:
   ndcg_mean = np.mean(np.array(ndcg_list))
 
   return (hit_ratio_mean, ndcg_mean)
+
+class TestFmModel():
+
+    def testModel(model, full_dataset, device, topk=10): 
+        # Test the HR and NDCG for the model @topK
+        model.eval()
+
+        HR, NDCG = [], []
+
+        for user_test in full_dataset.test_set:
+            gt_item = user_test[0][1]
+
+            predictions = model.predict(user_test, device)
+            _, indices = torch.topk(predictions, topk)
+            recommend_list = user_test[indices.cpu().detach().numpy()][:, 1]
+
+            HR.append(getHitRatio(recommend_list, gt_item))
+            NDCG.append(getNDCG(recommend_list, gt_item))
+        return mean(HR), mean(NDCG)
