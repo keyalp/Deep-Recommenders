@@ -127,3 +127,74 @@ class DeepRecommender(nn.Module):
 
         return x
 
+class ResidualRecommender(nn.Module):
+    def __init__(self, user_count, movie_count, embedding_size_user, embedding_size_movie):
+        super().__init__()
+        self.user_embedding = nn.Embedding(user_count, embedding_size_user)
+        self.movie_embedding = nn.Embedding(movie_count, embedding_size_movie)
+
+        self.fc1 = nn.Linear(embedding_size_user + embedding_size_movie, 32)
+        self.fc2 = nn.Linear(32, 32)
+        self.fc3 = nn.Linear(32, 1)
+
+        self.dropout = nn.Dropout(0.3)
+        self.relu = nn.ReLU()
+        self.sigmoid = nn.Sigmoid()
+
+        torch.nn.init.xavier_uniform_(self.user_embedding.weight.data)
+        torch.nn.init.xavier_uniform_(self.movie_embedding.weight.data)
+
+    def forward(self, user_id, movie_id):
+        user_emb = self.user_embedding(user_id)
+        movie_emb = self.movie_embedding(movie_id)
+
+        x = torch.cat((user_emb, movie_emb), dim=1)
+        x = self.fc1(x)
+        x = self.dropout(x)
+        residual1 = x  # Residual connection
+        x = self.relu(x)
+
+        x = self.fc2(x)
+        x = self.dropout(x)
+        x = x + residual1  # Skip connection
+        x = self.relu(x)
+
+        x = self.fc3(x)
+        x = self.dropout(x)
+        x = self.sigmoid(x)
+
+        return x
+
+class CompactRecommender(nn.Module):
+    def __init__(self, user_count, movie_count, embedding_size_user, embedding_size_movie):
+        super().__init__()
+
+        self.user_embedding = nn.Embedding(user_count, embedding_size_user)
+        self.movie_embedding = nn.Embedding(movie_count, embedding_size_movie)
+
+        self.fc = nn.Sequential(
+            nn.Linear(embedding_size_user + embedding_size_movie, 64),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(64, 32),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(32, 1),
+            nn.Sigmoid()
+        )
+
+        self.initialize_weights()
+
+    def initialize_weights(self):
+        nn.init.xavier_uniform_(self.user_embedding.weight.data)
+        nn.init.xavier_uniform_(self.movie_embedding.weight.data)
+
+    def forward(self, user_id, movie_id):
+        user_emb = self.user_embedding(user_id)
+        movie_emb = self.movie_embedding(movie_id)
+
+        combined_embeddings = torch.cat((user_emb, movie_emb), dim=1)
+
+        output = self.fc(combined_embeddings)
+
+        return output
