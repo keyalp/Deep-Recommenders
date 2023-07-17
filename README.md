@@ -132,23 +132,28 @@ If you use online streaming services to watch films, such as Prime or Netflix, p
 - Because you have seen ... [4]
 
 These expressions respond to the method which the recommendation are based:
+
 [1] **Random**:
 This is one of the simplest methods, usually selected when new user. A list of k items is randomly selected from the whole item dataset.
+
 ![](https://hackmd.io/_uploads/H1KdpUnt2.jpg)
 
 [2] **Popularity**:
 This is the second simplest method, user thinks that most viewed items tend to be "the better". We want to be part of the group so if many others have seen I have to see it as well. 
+
 ![](https://hackmd.io/_uploads/SyJ2_PhK3.jpg)
 
 
 [3] **Collaborative** Based Filtering (CF)
 This model uses the opinion to recommend items identifying other users with similar taste.
 This is the most mature technique and also the most common, we will see more in detail the reasons.
+
 ![](https://hackmd.io/_uploads/BkT4_v2th.png)
 
 [4] **Content** Based Filtering (CBF)
 The content-based model tries to “understand” why a user interacts with an item: because of user features (as age, genre, address, job), might be the item features (duration, theme, violence, actors…) or any other personal information.
 This has a high computational cost because to deal with the large amount of features, the content is limited because it depends on the information that user provide, so normally there is overspecialization and sparsity of data.
+
 ![](https://hackmd.io/_uploads/BJnmvt6t2.png)
 
 
@@ -180,14 +185,17 @@ We have considerated the next statements before splitting:
 
 So finally we obtained a dataset with 1.154.533 rows, with 7795 users and 10295 movies.
 
-|   ![](https://hackmd.io/_uploads/Sk6mTzy93.png =300x450)   | ![](https://hackmd.io/_uploads/SyVR6G1c2.png =300x450)     | 
+![](https://hackmd.io/_uploads/Sk6mTzy93.png =300x450) ![](https://hackmd.io/_uploads/SyVR6G1c2.png =300x450)
 
 
 ## Negative sampling <a name="data_neg"></a>
 After the dataset records each user-item interaction as positive, there are no logs indicating non-interactions. Therefore, it becomes necessary to "manually" generate negative sampling, specifically for user-movie non-interactions. This preprocessing step is performed subsequent to the splitting process:
 - Regarding to train data the negative sampling is adding 4 negative samples for 1 positive in interaction list.
+
 ![](https://hackmd.io/_uploads/B13ZpoRYn.png =200x200)
+
 - Regarding to test data the negative sampling is adding 99 negative samples for 1 that we know it's real because it has been extracted from the original dataset. 
+
 ![](https://hackmd.io/_uploads/Sy_CyhCY3.png =120x180)
 
 # Metrics for evaluation
@@ -195,13 +203,18 @@ The main and clear evidence that our model is working properly is the accuracy g
 
 ## Hit rate <a name="hitrate"></a>
 If k are the first items that our recommender outputs, hit rate is how many times the output appears in one theses k positions. The next example shows the 10 items of our GT corresponding to user 1, and as we see in the figure the first item supposed to be clicked is 14966.
+
 ![](https://hackmd.io/_uploads/Hk9uXA0th.png =150x150)
+
 As we can see in the recommender list, the item 14966 is between the 10 first positions. So the RS is working as expected. In the context of Netflix platform this means that user will see ten movies, one of these we know user has clicked because it was in the original dataset, so the system is doing well.
+
 ![](https://hackmd.io/_uploads/ryTMX0Rtn.png)
 
 ## Intralist (NDCG) <a name="intralist"></a>
 We can check how relevant the list of recommended items are, Normalized Discounted Cumulative Gain (NDCG) is a type of intralist metrics. NDCG measures the "quality" of the ranking, we assign a gain to each element of the list for example using the feedback of users (rating less than 3 gain is 0, over is 1). The items at the top of the list accumulate a higher gain than the bottom positions because of distribution of probabilities. 
+
 ![](https://hackmd.io/_uploads/S1ZP8AAFh.png)
+
 For instance, consider the case of user 1 (up), where the NDCG score was 0.1183. This score indicates that the item they clicked was initially ranked seventh out of ten positions, while it should have been ranked among the top three positions.
 
 ## Coverage<a name="coverage"></a>
