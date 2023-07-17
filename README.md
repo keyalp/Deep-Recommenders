@@ -449,13 +449,21 @@ As we transition from random and popularity-based systems to advanced models lik
 
 # References
 [0] https://towardsdatascience.com/introduction-to-recommender-systems-6c66cf15ada
+
 (T1) https://towardsdatascience.com/factorization-machines-for-item-recommendation-with-implicit-feedback-data-5655a7c749db 
+
 [1] https://arxiv.org/abs/1703.04247
+
 [2] https://arxiv.org/abs/1708.05031
+
 [3] https://arxiv.org/abs/2103.03587
+
 [4] https://arxiv.org/pdf/2007.09036.pdf
+
 [5] https://datascienceub.medium.com/1-3-recommendation-vanilla-pipeline-for-recommender-systems-rs-ab7425b86d9
+
 [6] https://datascienceub.medium.com/2-3-recommendation-gcn-for-rs-397e98f37050
+
 [7] https://medium.com/sciforce/deep-learning-based-recommender-systems-b61a5ddd5456
 
 
