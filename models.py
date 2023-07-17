@@ -70,7 +70,7 @@ class FactorizationMachineModel(torch.nn.Module):
                 ix = torch.sum(ix, dim=1, keepdim=True)
             return 0.5 * ix
 
-class AbsolutePopularityModel: #Traduced
+class AbsolutePopularityModel:
     def __init__(self, num_items, topk):
         self.num_items = num_items
         self.item_popularity = None
@@ -169,6 +169,9 @@ class PopularityModel:
         # Initiate the count for correctly classified at 0:
         correctly_classified = 0
 
+        # Define a list to store all the recomendad movies across all the users:
+        total_list_of_recomended_movies = []
+
         for i, (us_id, user_df) in enumerate(self.test.groupby("user_id")):
             # From all the movies in the test set for the user us_id we want to know how popular they are:
             # For this the first step will be to get a list of the movie_ids in the dataframe user_df:
@@ -186,10 +189,21 @@ class PopularityModel:
             if i % 1000 == 0:
                 print(f"User number {i} done!")
 
+            total_list_of_recomended_movies.append(top_k_movies)
+
         # Now we want to know in how many cases the positive interaction of the user in the test set appeared in the k-sample:
         hit_ratio = correctly_classified / len(self.test.loc[self.test["label"] == 1])
 
-        print(f"Hit ratio {hit_ratio} popluarity model")
+        total_recommended_items = np.array(total_list_of_recomended_movies).flatten()
+        num_unique_items_recommended = len(np.unique(total_recommended_items))
+
+        # Number of all the unique items in test:
+        num_total_unique_items = len(self.test["item_id"].unique())
+
+        coverage = num_unique_items_recommended / num_total_unique_items
+
+        print(f"Hit ratio {hit_ratio} popularity model")
+        print(f"Coverage {coverage}")
 
 class DeepRecommender(nn.Module):
     def __init__(self, user_count, movie_count, embeding_size_user, embeding_size_movie):
@@ -255,9 +269,6 @@ class ResidualRecommender(nn.Module):
     def forward(self, user_id, movie_id):
         user_emb = self.user_embedding(user_id)
         movie_emb = self.movie_embedding(movie_id)
-
-        residual_user_emb = user_emb
-        residual_movie_emb = movie_emb
 
         user_emb = self.fc_u(user_emb)
         movie_emb = self.fc_m(movie_emb)

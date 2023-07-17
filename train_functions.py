@@ -9,7 +9,7 @@ from math import sqrt
 import random
 import torch
 from statistics import mean
-from test_functions import TestFmModel, coverage
+from test_functions import TestFmModel, coverage, getHitRatio, getNDCG
 from models import FactorizationMachineModel, AbsolutePopularityModel
 from tqdm import tqdm
 
@@ -70,7 +70,7 @@ def generate_hparams(model_name: str, train: pd.DataFrame) -> dict:
     if model_name == "compact":
         hparams = {
             'batch_size': 500000,
-            'num_epochs': 3,
+            'num_epochs': 2,
             'lr': 0.01,
             'max_user_id': int(train["user_id"].max()),
             'max_item_id': int(train["item_id"].max()),
@@ -79,8 +79,6 @@ def generate_hparams(model_name: str, train: pd.DataFrame) -> dict:
         }
     
     if (model_name == "fm") | (model_name == "abs_popularity"):
-
-        print(train)
         hparams = {
             'topk': 10,
             'lr': 0.001, 
@@ -241,19 +239,6 @@ def run_fm_model(full_dataset, data_loader, hparams, device):
     )
     train_model_fm.do_epochs()
 
-    ###TEST EVALUATION FM 
-    # user_test = full_dataset.test_set[1]
-    # out = model_fm.predict(user_test,device)
-
-    # out[:10]
-    # values, indices = torch.topk(out, 10)
-
-    # RANKING LIST TO RECOMMEND
-    # recommend_list = user_test[indices.cpu().detach().numpy()][:, 1]
-    # print('Recommended List: ',recommend_list)
-    # gt_item = 14966
-    # print(gt_item in recommend_list)
-
     coverage_per_item = 100*coverage(full_dataset.test_set,hparams['num_items'],hparams['topk'],model_fm,device)
     print(f'Coverage: {coverage_per_item:.2f}')
     
@@ -264,28 +249,33 @@ def run_fm_model(full_dataset, data_loader, hparams, device):
 
 ########## ABOLUTE POPULARITY MODEL ##########
 def run_pop_model(full_dataset, data_loader, hparams):
+
+    print("Popularity model running...")
     topk = hparams['topk']
-    pop_model = AbsolutePopularityModel(hparams['num_items'],topk)
-    user_test_pop = full_dataset.test_set[5][0][0]
-
+    pop_model = AbsolutePopularityModel(hparams['num_items'], topk)
     ranked_sorted = pop_model.fit(data_loader.dataset.interactions)
-    pop_recommend_list = pop_model.predict(ranked_sorted, data_loader.dataset.interactions, user_test_pop,topk)
-    print(pop_recommend_list[:10])
-
-    #usersID = 7795
-    usersID = hparams["num_users"]
     items_for_all_users = []
 
-    for i in tqdm(range(usersID)):
+    ############ TEST FUNCTION
+    HR, NDCG = [], []
+    for user_test in full_dataset.test_set:
+        gt_item = user_test[0][1]
+
         # extract the list of recomendations for each user:
-        pop_recommend_list_user = pop_model.predict(ranked_sorted, data_loader.dataset.interactions, i,topk)
+        recommend_list = pop_model.predict(ranked_sorted, data_loader.dataset.interactions, user_test, topk)
+        recommend_list = [row[0] for row in recommend_list]
+        items_for_all_users.append(recommend_list)
 
-        items_for_all_users.append(pop_recommend_list_user)
+        HR.append(getHitRatio(recommend_list, gt_item))
+        NDCG.append(getNDCG(recommend_list, gt_item))
+    
+    hr, ndcg =  mean(HR), mean(NDCG)
 
+    print(f'Eval: HR@{topk} = {hr:.4f}, NDCG@{topk} = {ndcg:.4f} ')
+    
     flattened_items_for_all_users = np.array(items_for_all_users).flatten()
-    num_items_recommended = np.unique(flattened_items_for_all_users)
-
+    num_items_recommended = len(np.unique(flattened_items_for_all_users))
+                                      
     coverage_pop = num_items_recommended / hparams["num_items"]
-    print(coverage_pop)
 
-    print(len(num_items_recommended) / hparams["num_items"])
+    print(f"Absolute popularity model coverage: {coverage_pop}")

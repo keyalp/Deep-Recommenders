@@ -67,32 +67,46 @@ def generate_test_df(model: nn.Module, test_loader: DataLoader, device) -> pd.Da
   return results_dataframe
 
 def test_function(test_df: pd.DataFrame) -> Tuple[float]:
-  """
-  Get's as input a dataframe with the predictions and calculates the HitRatio and the NDCG
-  """
-  # Initialize lists to store hit ratios and NDCG
-  hitratio_list = []
-  ndcg_list = []
+    """
+    Get's as input a dataframe with the predictions and calculates the HitRatio and the NDCG
+    """
+    # Initialize lists to store hit ratios and NDCG
+    hitratio_list = []
+    ndcg_list = []
 
-  # iterate trough the users:
-  for us_id, us_df in test_df.groupby("user_id"):
-    # Get the recommendations in a list:
-    recomendations = us_df.sort_values(by="output_prob", ascending=False)["item_id"][:10]
+    # Define a list to add all the recommendations from all the users:
+    total_list_of_recomended_movies = []
 
-    # Get the positive interation ofr user us_id:
-    pos_interaction = us_df.loc[us_df["target"] == 1, "item_id"].iloc[0]
+    # iterate trough the users:
+    for us_id, us_df in test_df.groupby("user_id"):
+        # Get the recommendations in a list:
+        recomendations = us_df.sort_values(by="output_prob", ascending=False)["item_id"][:10]
 
-    # Calculate the metrics and add them to the lists:
-    hit_ratio = getHitRatio(list(recomendations), pos_interaction)
-    ndcg = getNDCG(recomendations.values, pos_interaction)
+        # Append the recommendations to the total list:
+        total_list_of_recomended_movies.append(recomendations)
 
-    hitratio_list.append(hit_ratio)
-    ndcg_list.append(ndcg)
+        # Get the positive interation ofr user us_id:
+        pos_interaction = us_df.loc[us_df["target"] == 1, "item_id"].iloc[0]
 
-  hit_ratio_mean = np.mean(np.array(hitratio_list))
-  ndcg_mean = np.mean(np.array(ndcg_list))
+        # Calculate the metrics and add them to the lists:
+        hit_ratio = getHitRatio(list(recomendations), pos_interaction)
+        ndcg = getNDCG(recomendations.values, pos_interaction)
 
-  return (hit_ratio_mean, ndcg_mean)
+        hitratio_list.append(hit_ratio)
+        ndcg_list.append(ndcg)
+
+    hit_ratio_mean = np.mean(np.array(hitratio_list))
+    ndcg_mean = np.mean(np.array(ndcg_list))
+
+    total_recommended_items = np.array(total_list_of_recomended_movies).flatten()
+    num_unique_items_recommended = len(np.unique(total_recommended_items))
+
+    # Number of all the unique items in test:
+    num_total_unique_items = len(test_df["item_id"].unique())
+
+    coverage = num_unique_items_recommended / num_total_unique_items
+
+    return (hit_ratio_mean, ndcg_mean, coverage)
 
 class TestFmModel():
 

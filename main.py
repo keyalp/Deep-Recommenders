@@ -94,11 +94,13 @@ def train_model(model_name: str) -> None:
         # Generate the predictions and store them in a DataFrame:
         test_df = generate_test_df(model, netflix_data.test_loader, device)
 
-        hit_ratio, ndcg = test_function(test_df)
+        hit_ratio, ndcg, coverage = test_function(test_df)
         print("Hit ratio:")
         print(hit_ratio)
         print("NDCG:")
         print(ndcg)
+        print("Coverage:")
+        print(coverage)
     
     if model_name == "residual":
 
@@ -120,11 +122,13 @@ def train_model(model_name: str) -> None:
         # Generate the predictions and store them in a DataFrame:
         test_df = generate_test_df(model, netflix_data.test_loader, device)
 
-        hit_ratio, ndcg = test_function(test_df)
+        hit_ratio, ndcg, coverage = test_function(test_df)
         print("Hit ratio:")
         print(hit_ratio)
         print("NDCG:")
         print(ndcg)
+        print("Coverage:")
+        print(coverage)
 
     if model_name == "compact":
 
@@ -146,11 +150,13 @@ def train_model(model_name: str) -> None:
         # Generate the predictions and store them in a DataFrame:
         test_df = generate_test_df(model, netflix_data.test_loader, device)
 
-        hit_ratio, ndcg = test_function(test_df)
+        hit_ratio, ndcg, coverage = test_function(test_df)
         print("Hit ratio:")
         print(hit_ratio)
         print("NDCG:")
         print(ndcg)
+        print("Coverage:")
+        print(coverage)
 
     if model_name == "fm":
         run_fm_model(full_dataset, data_loader, hparams, device)
