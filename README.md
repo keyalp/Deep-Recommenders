@@ -442,7 +442,7 @@ Deep learning models:
 - Represent a significant qualitative leap in terms of performance.
 - Achieve a significant increase in hit rate (HR) and recommendation quality (NDCG).
 - Enables learning more complex features and patterns from the data.
-- They may encounter diversity issues in recommendations, especially in the residual and compact versions.
+- They may encounter diversity issues in recommendations, especially in the compact versions.
 
 As we transition from random and popularity-based systems to advanced models like Factorization Machine and Deep Learning, we notice enhancements in recommendation quality and personalization. Nonetheless, it's important to be mindful of potential diversity issues that can arise in these sophisticated models. The selection of a recommendation system should consider the project's specific goals, requirements, and available resources.
 
