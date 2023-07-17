@@ -185,18 +185,18 @@ We have considerated the next statements before splitting:
 
 So finally we obtained a dataset with 1.154.533 rows, with 7795 users and 10295 movies.
 
-![](https://hackmd.io/_uploads/Sk6mTzy93.png =300x450) ![](https://hackmd.io/_uploads/SyVR6G1c2.png =300x450)
+![](https://hackmd.io/_uploads/Sk6mTzy93.png=300x450) ![](https://hackmd.io/_uploads/SyVR6G1c2.png=300x450)
 
 
 ## Negative sampling <a name="data_neg"></a>
 After the dataset records each user-item interaction as positive, there are no logs indicating non-interactions. Therefore, it becomes necessary to "manually" generate negative sampling, specifically for user-movie non-interactions. This preprocessing step is performed subsequent to the splitting process:
 - Regarding to train data the negative sampling is adding 4 negative samples for 1 positive in interaction list.
 
-![](https://hackmd.io/_uploads/B13ZpoRYn.png =200x200)
+![](https://hackmd.io/_uploads/B13ZpoRYn.png=200x200)
 
 - Regarding to test data the negative sampling is adding 99 negative samples for 1 that we know it's real because it has been extracted from the original dataset. 
 
-![](https://hackmd.io/_uploads/Sy_CyhCY3.png =120x180)
+![](https://hackmd.io/_uploads/Sy_CyhCY3.png=120x180)
 
 # Metrics for evaluation
 The main and clear evidence that our model is working properly is the accuracy given by the Hit rate, but there are other metrics that helps us to interpret what is going on in our system.
