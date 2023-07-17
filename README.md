@@ -204,7 +204,7 @@ The main and clear evidence that our model is working properly is the accuracy g
 ## Hit rate <a name="hitrate"></a>
 If k are the first items that our recommender outputs, hit rate is how many times the output appears in one theses k positions. The next example shows the 10 items of our GT corresponding to user 1, and as we see in the figure the first item supposed to be clicked is 14966.
 
-![](https://hackmd.io/_uploads/Hk9uXA0th.png =150x150)
+![](https://hackmd.io/_uploads/Hk9uXA0th.png=150x150)
 
 As we can see in the recommender list, the item 14966 is between the 10 first positions. So the RS is working as expected. In the context of Netflix platform this means that user will see ten movies, one of these we know user has clicked because it was in the original dataset, so the system is doing well.
 
