@@ -7,7 +7,7 @@ Final Project for the UPC Artificial Intelligence with Deep Learning Postgraduat
 * Team Advisor: [Paula Gomez Duran](paulagomezduran@gmail.com)
 * Date: July 2023
 
-## Table of Contents (Provisional)
+## Table of Contents
 
 * [Introduction](#intro)
 * [Overview](#overview)
@@ -119,8 +119,6 @@ Replace the variable `<model_name>` with the name of the model you want to train
 - `fm`
 - `abs_popularity`
 
-A pop up will appear showing the loss function of the train and validation datasets during the training. To get the test metrics close the pop up and the code will continue running.
-
 # Architectures<a name="architectures_usage" ></a>
 The main purpose of a recommender system (RS) is to predict which item will be clicked next by the user. This is not a guarantee of positive feedback; it just counts what the user probably will click.
 In order to achieve this task, we can find two major methods: Content-based and Collaborative-based. However, these methods are complex and require a deep dive into the data and the process, so our starting point has been two simple models to get familiar with RS: Random and Popularity.
@@ -132,28 +130,23 @@ If you use online streaming services to watch films, such as Prime or Netflix, p
 - Because you have seen ... [4]
 
 These expressions respond to the method which the recommendation are based:
-
 [1] **Random**:
 This is one of the simplest methods, usually selected when new user. A list of k items is randomly selected from the whole item dataset.
-
 ![](https://hackmd.io/_uploads/H1KdpUnt2.jpg)
 
 [2] **Popularity**:
 This is the second simplest method, user thinks that most viewed items tend to be "the better". We want to be part of the group so if many others have seen I have to see it as well. 
-
 ![](https://hackmd.io/_uploads/SyJ2_PhK3.jpg)
 
 
 [3] **Collaborative** Based Filtering (CF)
 This model uses the opinion to recommend items identifying other users with similar taste.
 This is the most mature technique and also the most common, we will see more in detail the reasons.
-
 ![](https://hackmd.io/_uploads/BkT4_v2th.png)
 
 [4] **Content** Based Filtering (CBF)
 The content-based model tries to “understand” why a user interacts with an item: because of user features (as age, genre, address, job), might be the item features (duration, theme, violence, actors…) or any other personal information.
 This has a high computational cost because to deal with the large amount of features, the content is limited because it depends on the information that user provide, so normally there is overspecialization and sparsity of data.
-
 ![](https://hackmd.io/_uploads/BJnmvt6t2.png)
 
 
@@ -185,17 +178,14 @@ We have considerated the next statements before splitting:
 
 So finally we obtained a dataset with 1.154.533 rows, with 7795 users and 10295 movies.
 
-![](https://hackmd.io/_uploads/Sk6mTzy93.png =300x450) ![](https://hackmd.io/_uploads/SyVR6G1c2.png =300x450)
+![](https://hackmd.io/_uploads/Sk6mTzy93.png =300x450)   ![](https://hackmd.io/_uploads/SyVR6G1c2.png =300x450)
 
 
 ## Negative sampling <a name="data_neg"></a>
 After the dataset records each user-item interaction as positive, there are no logs indicating non-interactions. Therefore, it becomes necessary to "manually" generate negative sampling, specifically for user-movie non-interactions. This preprocessing step is performed subsequent to the splitting process:
 - Regarding to train data the negative sampling is adding 4 negative samples for 1 positive in interaction list.
-
 ![](https://hackmd.io/_uploads/B13ZpoRYn.png =200x200)
-
 - Regarding to test data the negative sampling is adding 99 negative samples for 1 that we know it's real because it has been extracted from the original dataset. 
-
 ![](https://hackmd.io/_uploads/Sy_CyhCY3.png =120x180)
 
 # Metrics for evaluation
@@ -203,18 +193,13 @@ The main and clear evidence that our model is working properly is the accuracy g
 
 ## Hit rate <a name="hitrate"></a>
 If k are the first items that our recommender outputs, hit rate is how many times the output appears in one theses k positions. The next example shows the 10 items of our GT corresponding to user 1, and as we see in the figure the first item supposed to be clicked is 14966.
-
 ![](https://hackmd.io/_uploads/Hk9uXA0th.png =150x150)
-
 As we can see in the recommender list, the item 14966 is between the 10 first positions. So the RS is working as expected. In the context of Netflix platform this means that user will see ten movies, one of these we know user has clicked because it was in the original dataset, so the system is doing well.
-
 ![](https://hackmd.io/_uploads/ryTMX0Rtn.png)
 
 ## Intralist (NDCG) <a name="intralist"></a>
 We can check how relevant the list of recommended items are, Normalized Discounted Cumulative Gain (NDCG) is a type of intralist metrics. NDCG measures the "quality" of the ranking, we assign a gain to each element of the list for example using the feedback of users (rating less than 3 gain is 0, over is 1). The items at the top of the list accumulate a higher gain than the bottom positions because of distribution of probabilities. 
-
 ![](https://hackmd.io/_uploads/S1ZP8AAFh.png)
-
 For instance, consider the case of user 1 (up), where the NDCG score was 0.1183. This score indicates that the item they clicked was initially ranked seventh out of ten positions, while it should have been ranked among the top three positions.
 
 ## Coverage<a name="coverage"></a>
@@ -227,14 +212,14 @@ The coverage metric is determined by the ratio of unique items recommended by th
 
 <!--![](https://hackmd.io/_uploads/BJHj6sAth.png)-->
 
-# CF Models Exploration:: Understanding and Comparison <a name=""></a>
+# CF Models Exploration: Understanding and Comparison <a name=""></a>
 
 ## Random model:
 The random model suggests 10 movies randomly to the user. Considering its nature, we anticipate poor performance from this model. Indeed, the results are as follows:
 
 | Hit ratio 10 | NDCG     | Coverage |
 | ------------ | -------- | -------- |
-| 0.1001       | 0.0451     | 100%   |
+| 0.1001       | 0.0451     | 100%     |
 
 
 ## Popularity models:
@@ -345,14 +330,13 @@ Setting the following hyperparameters
 - **embeding dimension for movies:** 39
 
 and training we obtain:
-
 ![](https://hackmd.io/_uploads/BJa1VE-c3.png)
 
 We can see that the model begins to overfit around the 25th batch so by doing an early stoppage we get the following test metrics:
 
-| Hit ratio 10 | NDCG | Coverage |
-| -------- | -------- | -------- |
-|  0.68  | 0.61     | 50%
+| Hit ratio 10 | NDCG     | Coverage |
+| --------     | -------- | -------- |
+|  0.68        | 0.61     | 50%
 
 ### Residual model:
 
@@ -368,14 +352,13 @@ Setting the following hyperparameters
 - **embeding dimension for movies:** 39
 
 and training we obtain:
-
 ![](https://hackmd.io/_uploads/BJ8afBbch.png)
 
 We can see that the model overfits faster than the previous one. In this case from the 18th batch. By doing an early stopagge we obtain the following test metrics:
 
-| Hit ratio 10 | NDCG | Coverage |
-| -------- | -------- | -------- |
-|  0.52  | 0.30     | 90%        |
+| Hit ratio 10 | NDCG   | Coverage |
+| -----------  | -------| -------- |
+|  0.52        | 0.30   | 90%      |
 
 
 ### Compact model:
@@ -392,25 +375,24 @@ Setting the following hyperparameters
 - **embeding dimension for movies:** 20
 
 and training we obtain:
-
 ![](https://hackmd.io/_uploads/SkZiFBZ52.png)
 
-| Hit ratio 10 | NDCG | Coverage |
-| -------- | -------- | ------- |
-|  0.55  | 0.27     | 24% |
+| Hit ratio 10 | NDCG     | Coverage |
+| ----------   | -------- | -------- |
+|  0.55        | 0.27     | 24%      |
 
 
 # Results<a name="results"></a> 
 
 |Model             | Hit ratio 10 | NDCG     | Coverage (%) |
-|------            | ------------ | -------- | -------- |
-|Random            | 0.10       | 0.05   | 100%     |
-|ABS Popularity    | 0.02        | 0.01    | 0.09%    |
-|Popularity        | 0.59         | 0.31      | 19%      |
-|Factorization M   | 0.34       | 0.17   | 46%   |
-|Deeper            |  0.68        | 0.61     | 50% |
-|Residual          |  0.52        | 0.30     | 90% | 
-|Compact           | 0.55         | 0.27     | 24% |
+|---------------   | ------------ | -------- | -----------  |
+|Random            | 0.10         | 0.05     | 100%         |
+|ABS Popularity    | 0.02         | 0.01     | 0.09%        |
+|Popularity        | 0.59         | 0.31     | 19%          |
+|Factorization M   | 0.34         | 0.17     | 46%          |
+|Deeper            | 0.68         | 0.61     | 50%          |
+|Residual          | 0.52         | 0.30     | 90%          | 
+|Compact           | 0.55         | 0.27     | 24%          |
 
 In the provided table, we observe that both the Hit Ratio (HR) metrics and NDCG values are similar for the random and ABS popularity models. Upon examining the user_test and recommendation list, it becomes apparent that approximately 65% of the movie_ids are greater than 10,000. Typically, an NDCG value close to 1 indicates highly relevant and well-ordered recommendations, while a value close to 0 suggests less relevant or disorganized recommendations. In other words, the recommender system is providing recommendations with a low likelihood of being useful or interesting to users, resulting in a low HR compared to other models.
 
@@ -449,21 +431,13 @@ As we transition from random and popularity-based systems to advanced models lik
 
 # References
 [0] https://towardsdatascience.com/introduction-to-recommender-systems-6c66cf15ada
-
 (T1) https://towardsdatascience.com/factorization-machines-for-item-recommendation-with-implicit-feedback-data-5655a7c749db 
-
 [1] https://arxiv.org/abs/1703.04247
-
 [2] https://arxiv.org/abs/1708.05031
-
 [3] https://arxiv.org/abs/2103.03587
-
 [4] https://arxiv.org/pdf/2007.09036.pdf
-
 [5] https://datascienceub.medium.com/1-3-recommendation-vanilla-pipeline-for-recommender-systems-rs-ab7425b86d9
-
 [6] https://datascienceub.medium.com/2-3-recommendation-gcn-for-rs-397e98f37050
-
 [7] https://medium.com/sciforce/deep-learning-based-recommender-systems-b61a5ddd5456
 
 
