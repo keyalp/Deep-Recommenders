@@ -221,7 +221,7 @@ The random model suggests 10 movies randomly to the user. Considering its nature
 
 | Hit ratio 10 | NDCG     | Coverage |
 | ------------ | -------- | -------- |
-| 0.1001       | 0.0451     | 100%     |
+| 0.1001       | 0.0451     | 100%   |
 
 
 ## Popularity models:
@@ -332,6 +332,7 @@ Setting the following hyperparameters
 - **embeding dimension for movies:** 39
 
 and training we obtain:
+
 ![](https://hackmd.io/_uploads/BJa1VE-c3.png)
 
 We can see that the model begins to overfit around the 25th batch so by doing an early stoppage we get the following test metrics:
@@ -354,6 +355,7 @@ Setting the following hyperparameters
 - **embeding dimension for movies:** 39
 
 and training we obtain:
+
 ![](https://hackmd.io/_uploads/BJ8afBbch.png)
 
 We can see that the model overfits faster than the previous one. In this case from the 18th batch. By doing an early stopagge we obtain the following test metrics:
@@ -377,6 +379,7 @@ Setting the following hyperparameters
 - **embeding dimension for movies:** 20
 
 and training we obtain:
+
 ![](https://hackmd.io/_uploads/SkZiFBZ52.png)
 
 | Hit ratio 10 | NDCG | Coverage |
