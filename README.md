@@ -358,7 +358,7 @@ We can see that the model begins to overfit around the 25th batch so by doing an
 
 ![](https://hackmd.io/_uploads/SJQeD4-ch.png)
 
-In this case the model proposed has wider layers and a much considers a skip connection in the first layer of the fully connected block. 
+In this case the model proposed has wider layers and a skip connection in the first layer of the fully connected block. 
 
 Setting the following hyperparameters
 - **batch size:** 500000
